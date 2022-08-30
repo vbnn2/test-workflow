@@ -31,4 +31,6 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Run test shell
-        run: ${GITHUB_WORKSPACE}/test.sh
+        run: |
+          chmod +x ${GITHUB_WORKSPACE}/test.sh
+          ${GITHUB_WORKSPACE}/test.sh

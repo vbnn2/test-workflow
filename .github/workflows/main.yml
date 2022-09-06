@@ -34,6 +34,11 @@ on:
         description: 'Environment to run tests against'
         type: environment
         required: true
+      create_pr:
+        description: 'Create a pull request with new changes'
+        required: false
+        default: false
+        type: boolean
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -65,3 +70,14 @@ jobs:
         run: |
           chmod +x ${GITHUB_WORKSPACE}/test.sh
           ${GITHUB_WORKSPACE}/test.sh ${{ github.run_number }}
+      - name: Create pull request
+        if: ${{ inputs.create_pr }}
+        run: |
+          date > date.txt
+          git branch PR_${{ github.run_number }}
+          git checkout PR_${{ github.run_number }}
+          git add .
+          git commit -m "[Build Machine] Auto fetch and build #PR_${{ github.run_number }}"
+          git push -u origin PR_${{ github.run_number }}
+          gh pr create -B main -H PR_${{ github.run_number }} -f
+

@@ -15,7 +15,6 @@ on:
     inputs:
       logLevel:
         description: 'Log level'
-        required: false
         default: 'warning'
         type: choice
         options:
@@ -24,19 +23,15 @@ on:
         - debug
       fetch_localization:
         description: 'Fetch Localization'
-        required: false
         type: boolean
       fetch_config:
         description: 'Fetch Config'
-        required: false
         type: boolean
       environment:
         description: 'Environment to run tests against'
         type: environment
-        required: true
       create_pr:
         description: 'Create a pull request with new changes'
-        required: false
         default: false
         type: boolean
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel

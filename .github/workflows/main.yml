@@ -12,7 +12,28 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: false
+        default: 'warning'
+        type: choice
+        options:
+        - info
+        - warning
+        - debug
+      fetch_localization:
+        description: 'Fetch Localization'
+        required: false
+        type: boolean
+      fetch_config:
+        description: 'Fetch Config'
+        required: false
+        type: boolean
+      environment:
+        description: 'Environment to run tests against'
+        type: environment
+        required: true
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -28,6 +49,14 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo Hello, world!
+      - run: |
+          echo "Localization: $LOCALIZATION"
+          echo "Config: $CONFIG"
+          echo "Environment: $ENVIRONMENT"
+        env:
+          LOCALIZATION: ${{ inputs.fetch_localization }}
+          CONFIG: ${{ inputs.fetch_config }}
+          ENVIRONMENT: ${{ inputs.environment }}
 
       # Runs a set of commands using the runners shell
       - name: Run test shell

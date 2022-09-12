@@ -52,6 +52,7 @@ jobs:
       - name: Check ENV
         run: env
       - run: |
+          gh --version
           echo "Localization: $LOCALIZATION"
           echo "Config: $CONFIG"
           echo "Environment: $ENVIRONMENT"

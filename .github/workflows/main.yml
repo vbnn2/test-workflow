@@ -50,7 +50,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Check ENV
-        run: env
+        run: ifconfig
       - run: |
           gh --version
           echo "Localization: $LOCALIZATION"

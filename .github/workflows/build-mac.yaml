@@ -14,6 +14,5 @@ jobs:
     steps:
       - name: build
         run: |
-          gecho "${{ inputs.changelog }}"
-          # extra_args=$(echo $EXTRA_ARGS | jq '. += {changelog: "${{ inputs.changelog }}", build_actor: "${{ github.actor }}"}')
-          # BuildTools/Builder/build.sh -p mac-${{ inputs.profile }} -v ${{ inputs.version_name }} -n ${{ inputs.version_code }} -x "$extra_args"
+          extra_args=$(echo "{}" | jq '. += {changelog: "${{ inputs.changelog }}"}')
+          ./test.sh -x "$extra_args"

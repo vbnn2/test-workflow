@@ -7,17 +7,13 @@ on:
 jobs:
   setup:
     name: Setup Build Version
-    runs-on: [self-hosted, bm-origin-client-mac]
+    runs-on: [self-hosted]
     outputs:
       changelog: ${{ steps.get_changelog.outputs.changelog }}
     steps:
     - uses: actions/checkout@v3
       with:
-        repository: axieinfinity/origin-client
-        ref: ${{ inputs.branch }}
-        clean: false
         fetch-depth: 0
-        token: ${{ secrets.GH_PAT }}
 
     - id: get_changelog
       name: Get Changelogs
@@ -40,7 +36,7 @@ jobs:
 
   build-mac:
     needs: [setup]
-    uses: vbnn2/test-workflow/.github/workflows/build-mac.yaml@master
+    uses: vbnn2/test-workflow/.github/workflows/build-mac.yaml@main
     with:
       changelog: ${{ needs.setup.outputs.changelog }}
     secrets: inherit

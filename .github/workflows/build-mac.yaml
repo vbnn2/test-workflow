@@ -1,0 +1,19 @@
+name: Build Mac
+run-name: Build Mac ${{ inputs.branch }}-${{ inputs.profile }}-${{ inputs.version_name }}-${{ inputs.version_code }}
+on:
+  workflow_call:
+    inputs:
+      changelog:
+        description: 'Changelog'
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: [self-hosted]
+    steps:
+      - name: build
+        run: |
+          gecho "${{ inputs.changelog }}"
+          # extra_args=$(echo $EXTRA_ARGS | jq '. += {changelog: "${{ inputs.changelog }}", build_actor: "${{ github.actor }}"}')
+          # BuildTools/Builder/build.sh -p mac-${{ inputs.profile }} -v ${{ inputs.version_name }} -n ${{ inputs.version_code }} -x "$extra_args"

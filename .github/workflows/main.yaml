@@ -1,0 +1,47 @@
+name: Build All
+run-name: "Build all - branch: ${{ inputs.branch }} - env: ${{ inputs.profile }}"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    name: Setup Build Version
+    runs-on: [self-hosted, bm-origin-client-mac]
+    outputs:
+      changelog: ${{ steps.get_changelog.outputs.changelog }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: axieinfinity/origin-client
+        ref: ${{ inputs.branch }}
+        clean: false
+        fetch-depth: 0
+        token: ${{ secrets.GH_PAT }}
+
+    - id: get_changelog
+      name: Get Changelogs
+      run: |
+        LAST_SHA="88572c13324050bbbabee39bc393496e5b03558c"
+        CURRENT_SHA="d01873067ba94ff57a74a4c70d5fd431dbd5012c"
+        CHANGELOG=$(git log --format="%an - %h %s" "$CURRENT_SHA"..."$LAST_SHA")
+
+        echo "ChangeLog:" >> $GITHUB_STEP_SUMMARY
+        echo "$CHANGELOG" >> $GITHUB_STEP_SUMMARY
+        
+        CHANGELOG=$(gecho "$CHANGELOG" | sed -r s/\'//g)
+        CHANGELOG=$(gecho "$CHANGELOG" | sed -r s/\"//g)
+
+        # Set multiline string changelog to output
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        gecho "changelog<<$EOF" >> "$GITHUB_OUTPUT"
+        gecho "$CHANGELOG" >> $GITHUB_OUTPUT
+        gecho "$EOF" >> "$GITHUB_OUTPUT"
+
+  build-mac:
+    needs: [setup]
+    uses: vbnn2/test-workflow/.github/workflows/build-mac.yaml@master
+    with:
+      changelog: ${{ needs.setup.outputs.changelog }}
+    secrets: inherit
+
